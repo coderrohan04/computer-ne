@@ -1,0 +1,60 @@
+5 6
+1 2 10
+1 3 5
+2 4 1
+2 5 5
+3 4 5
+3 5 15
+1
+#include <bits/stdc++.h>
+using namespace std;
+const int MAX = 1001;
+const long long INF = 1e18;
+int main(){
+ int n, m;
+ cin >> n >> m;
+ long long adj[MAX][MAX];
+ for(int i = 1; i <= n; i++) {
+ for(int j = 1; j <= n; j++) {
+ adj[i][j] = INF;
+ } }
+ for(int i = 0; i < m; i++){
+ int u, v, w;
+ cin >> u >> v >> w;
+ if(w < adj[u][v]){
+ adj[u][v] = w;
+ adj[v][u] = w;
+ } }
+ int source;
+ cin >> source;
+ long long dist[MAX];
+ bool visited[MAX] = {false};
+ for(int i = 1; i <= n; i++) dist[i] = INF;
+ dist[source] = 0;
+ priority_queue<pair<long long, int>, vector<pair<long long, int>>,
+greater<pair<long long, int>>> pq;
+ pq.emplace(0, source);
+ while(!pq.empty()){
+ pair<long long, int> current = pq.top();
+ pq.pop();
+ long long current_dist = current.first;
+ int u = current.second;
+ if(visited[u]) continue;
+ visited[u] = true;
+ for(int v = 1; v <= n; v++){
+ if(adj[u][v] != INF && !visited[v]){
+ if(current_dist + adj[u][v] < dist[v]){
+ dist[v] = current_dist + adj[u][v];
+ pq.emplace(dist[v], v);
+ }
+ }
+ }
+ }
+ for(int i = 1; i <= n; i++){
+ if(dist[i] == INF)
+ cout << "Distance from " << source << " to " << i << " is INF\n";
+ else
+ cout << "Distance from " << source << " to " << i << " is " << dist[i] << "\n";
+ }
+ return 0;
+}
